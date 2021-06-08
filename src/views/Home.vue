@@ -105,10 +105,6 @@ export default {
           console.log("Place successfully deleted!", response.data);
           var index = this.places.indexOf(this.currentPlace);
           this.places.splice(index, 1);
-        })
-        .catch((error) => {
-          console.log(error.response.data.errors);
-          this.errors = error.response.data.errors;
         });
     },
   },
