@@ -14,6 +14,10 @@
         placeholder="address"
       /><br />
       <button v-on:click="placeCreate()">Add Place</button>
+      <p v-if="errors">
+        <strong>ERRORS:</strong><br />
+        {{ errors }}
+      </p>
     </div>
     <div>
       <p v-for="place in places" v-bind:key="place.id">
@@ -29,7 +33,7 @@
         <input type="text" v-model="currentPlace.name" /><br />
         <input type="text" v-model="currentPlace.address" /><br />
         <button v-on:click="placeUpdate()">Update</button>
-        <!-- <button v-on:click="placeDestroy()">Delete</button> -->
+        <button v-on:click="placeDestroy()">Delete</button>
         <button>Close</button>
       </form>
     </dialog>
@@ -48,6 +52,7 @@ export default {
       places: [],
       newPlaceParams: {},
       currentPlace: "",
+      errors: false,
     };
   },
   created: function () {
@@ -87,6 +92,19 @@ export default {
         )
         .then((response) => {
           console.log("Place successfully updated!", response.data);
+        })
+        .catch((error) => {
+          console.log(error.response.data.errors);
+          this.errors = error.response.data.errors;
+        });
+    },
+    placeDestroy: function () {
+      axios
+        .delete(`http://localhost:3000/places/${this.currentPlace.id}`)
+        .then((response) => {
+          console.log("Place successfully deleted!", response.data);
+          var index = this.places.indexOf(this.currentPlace);
+          this.places.splice(index, 1);
         })
         .catch((error) => {
           console.log(error.response.data.errors);
